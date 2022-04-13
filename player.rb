@@ -22,6 +22,15 @@ class Player
     bank.money += 10
   end
 
+  def cards_count
+    cards.length
+  end
+
+  def cards_drop
+    self.cards = []
+    self.points = 0
+  end
+
   protected
 
   attr_writer :name, :cards, :points
@@ -33,6 +42,4 @@ class Player
                      card.card_points
                    end
   end
-
-  def name_validate!; end
 end

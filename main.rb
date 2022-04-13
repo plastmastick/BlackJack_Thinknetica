@@ -5,11 +5,9 @@ require_relative 'deck'
 require_relative 'player'
 require_relative 'bank'
 require_relative 'interface'
-# Игрок (Пользователь и Дилер)
 
+system 'clear'
 print "Добро пожаловать в игру БлэкДжек!\n\nВведите ваше имя: "
 user_input = gets.chomp.capitalize
 
 Interface.new(user_input)
-
-puts "\n\nКонец игры."
