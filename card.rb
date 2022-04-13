@@ -23,12 +23,12 @@ class Card
   end
 
   def suit_unicode
-    SUITS_U[suit]
+    SUITS_U[suit.to_sym]
   end
 
   private
 
-  attr_writter :points
+  attr_writer :points
 
   def rank_name(value)
     @rank = RANKS[value] || value.to_s

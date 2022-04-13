@@ -13,10 +13,10 @@ class Deck
     suit_num = 1
     13.times do
       4.times do
-        @deck << Card.new(rank(rank_num), suit(suit_num))
+        @deck << Card.new(rank_num, suit_num)
         suit_num += 1
       end
-      suit_num = 0
+      suit_num = 1
       rank_num += 1
     end
   end

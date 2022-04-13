@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class Player
-  attr_reader :name, :cards, :bank, :points
+  attr_reader :name, :cards, :points
+  attr_accessor :money
 
   def initialize(name)
     self.name = name
-    self.bank = 100
+    self.money = 100
     self.points = 0
   end
 
@@ -15,6 +16,16 @@ class Player
     points_update(cards.last)
   end
 
+  def bid(bank)
+    self.money -= 10
+    # Валидация
+    bank.money += 10
+  end
+
+  protected
+
+  attr_writer :name, :cards, :points
+
   def points_update(card)
     self.points += if card.rank == 'Ace'
                      (points + card.card_points) > 21 ? 1 : card.card_points
@@ -22,10 +33,6 @@ class Player
                      card.card_points
                    end
   end
-
-  protected
-
-  attr_writter :name, :cards, :bank, :points
 
   def name_validate!; end
 end
