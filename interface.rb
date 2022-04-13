@@ -3,10 +3,10 @@
 class Interface
   attr_reader :player, :deck, :bank, :diler
 
-  def initialize(player_name)
+  def initialize(player)
     @deck = Deck.new
     @bank = Bank.new
-    @player ||= Player.new(player_name)
+    @player ||= player
     @diler ||= Player.new('Дилер')
     game_start
   end
@@ -80,7 +80,7 @@ class Interface
 
     player.cards_drop
     diler.cards_drop
-    initialize(player.name)
+    initialize(player)
   end
 
   def info(game_active: true)

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Player
+  include Validation
+
   attr_reader :name, :cards, :points
   attr_accessor :money
 
@@ -8,6 +10,7 @@ class Player
     self.name = name
     self.money = 100
     self.points = 0
+    validate!(:name, { presence: nil, comparison_min_length: 2 })
   end
 
   def add_card(deck)
@@ -17,8 +20,8 @@ class Player
   end
 
   def bid(bank)
+    validate! :money, { presence: nil, comparison_min: 10 }
     self.money -= 10
-    # Валидация
     bank.money += 10
   end
 
