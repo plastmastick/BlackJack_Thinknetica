@@ -12,7 +12,7 @@ def start
   user_input = gets.chomp.capitalize
 
   player = Player.new(user_input)
-  Interface.new(player)
+  Interface.new(player).game_start
 rescue RuntimeError => e
   puts "\nОшибка: #{e.message}"
   start

@@ -1,21 +1,24 @@
 # frozen_string_literal: true
 
 class Interface
-  attr_reader :player, :deck, :bank, :diler
+  AI_MAX_POINTS = 17
+  MAX_CARDS = 3
+  WIN_POINT = 21
 
   def initialize(player)
     @deck = Deck.new
     @bank = Bank.new
     @player ||= player
     @diler ||= Player.new('Дилер')
-    game_start
   end
 
   def game_start
-    puts "\nРаздача карт игрокам: #{player.name} и Дилер"
+    @deck.create_deck
+
+    puts "\nРаздача карт игрокам: #{@player.name} и Дилер"
     2.times do
-      player.add_card(deck)
-      diler.add_card(deck)
+      @player.add_card(@deck)
+      @diler.add_card(@deck)
     end
 
     puts "\nСтартовая ставка 10$"
@@ -27,7 +30,7 @@ class Interface
   def player_turn
     check_players_cards_count
 
-    puts "\nХод игрока #{player.name}"
+    puts "\nХод игрока #{@player.name}"
     info
     puts "\n\nВведите номер действия:\n1) Пропустить\n2) Добавить карту\n3) Открыть карты"
     user_input = gets.chomp.to_i
@@ -36,7 +39,7 @@ class Interface
     when 1
       diler_turn
     when 2
-      player.add_card(deck)
+      @player.add_card(@deck)
       diler_turn
     when 3
       game_end
@@ -48,8 +51,8 @@ class Interface
   def diler_turn
     check_players_cards_count
 
-    if diler.points < 17 && diler.cards.length < 3
-      diler.add_card(deck)
+    if @diler.points < AI_MAX_POINTS && @diler.cards.length < MAX_CARDS
+      @diler.add_card(@deck)
       console_clear 'Ход игрока Дилер - Игрок берет карту'
     else
       console_clear 'Ход игрока Дилер - Игрок пропускает ход'
@@ -62,7 +65,7 @@ class Interface
     console_clear
     puts 'Результат игры:'
     info(game_active: false)
-    puts "\nКоличество очков дилера: #{diler.points}"
+    puts "\nКоличество очков дилера: #{@diler.points}"
 
     winner = result_calculate
     puts winner.nil? ? "\nНичья" : "\nПобедитель #{winner.name}\nВыигрыш: 20$"
@@ -78,20 +81,20 @@ class Interface
     abort if user_input.zero?
     restart if user_input != 1
 
-    player.cards_drop
-    diler.cards_drop
-    initialize(player)
+    @player.cards_drop
+    @diler.cards_drop
+    game_start
   end
 
   def info(game_active: true)
     print "\nВаши карты:"
-    show_player_card(player)
+    show_player_card(@player)
 
-    puts "\nКоличество очков: #{player.points}"
-    puts "Денег: #{player.money}$"
+    puts "\nКоличество очков: #{@player.points}"
+    puts "Денег: #{@player.money}$"
 
     print 'Карты дилера:'
-    game_active ? show_player_card(diler, hide: true) : show_player_card(diler)
+    game_active ? show_player_card(@diler, hide: true) : show_player_card(@diler)
   end
 
   def show_player_card(player, hide: false)
@@ -101,26 +104,26 @@ class Interface
   protected
 
   def check_players_cards_count
-    game_end if player.cards_count == 3 && diler.cards_count == 3
+    game_end if @player.cards_count == MAX_CARDS && @diler.cards_count == MAX_CARDS
   end
 
   def result_calculate
-    player_score = player.points
-    diler_score = diler.points
+    player_score = @player.points
+    diler_score = @diler.points
 
     winner = if diler_win?(player_score, diler_score)
-               diler
+               @diler
              elsif player_win?(player_score, diler_score)
-               player
+               @player
              end
 
-    winner.nil? ? bank.draw_pay(player, diler) : bank.win_pay(winner)
+    winner.nil? ? @bank.draw_pay(@player, @diler) : @bank.win_pay(winner)
     winner
   end
 
   def start_bid
-    player.bid(bank)
-    diler.bid(bank)
+    @player.bid(@bank)
+    @diler.bid(@bank)
   end
 
   def console_clear(message = '')
@@ -129,10 +132,10 @@ class Interface
   end
 
   def diler_win?(player_score, diler_score)
-    (21 - player_score).negative? || (player_score < diler_score && !(21 - diler_score).negative?)
+    (WIN_POINT - player_score).negative? || (player_score < diler_score && !(WIN_POINT - diler_score).negative?)
   end
 
   def player_win?(player_score, diler_score)
-    player_score > diler_score || (21 - diler_score).negative?
+    player_score > diler_score || (WIN_POINT - diler_score).negative?
   end
 end

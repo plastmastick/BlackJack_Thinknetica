@@ -6,43 +6,46 @@ class Player
   attr_reader :name, :cards, :points
   attr_accessor :money
 
+  STEP = 10
+  WIN_POINT = 21
+
   def initialize(name)
-    self.name = name
-    self.money = 100
-    self.points = 0
+    @name = name
+    @money = 100
+    @points = 0
     validate!(:name, { presence: nil, comparison_min_length: 2 })
   end
 
   def add_card(deck)
-    self.cards ||= []
+    @cards ||= []
     cards << deck.give_card
     points_update(cards.last)
   end
 
   def bid(bank)
-    validate! :money, { presence: nil, comparison_min: 10 }
-    self.money -= 10
-    bank.money += 10
+    validate! :money, { presence: nil, comparison_min: STEP }
+    @money -= STEP
+    bank.money += STEP
   end
 
   def cards_count
-    cards.length
+    @cards.length
   end
 
   def cards_drop
-    self.cards = []
-    self.points = 0
+    @cards = []
+    @points = 0
   end
 
   protected
 
-  attr_writer :name, :cards, :points
+  attr_writer :cards
 
   def points_update(card)
-    self.points += if card.rank == 'Ace'
-                     (points + card.card_points) > 21 ? 1 : card.card_points
-                   else
-                     card.card_points
-                   end
+    @points += if card.rank == 'Ace'
+                 (points + card.card_points) > WIN_POINT ? 1 : card.card_points
+               else
+                 card.card_points
+               end
   end
 end
