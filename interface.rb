@@ -71,15 +71,15 @@ class Interface
     puts winner.nil? ? "\nНичья" : "\nПобедитель #{winner.name}\nВыигрыш: 20$"
 
     puts "\n\nКонец игры"
-    restart
+    restart_interface
   end
 
-  def restart
+  def restart_interface
     puts "\nСыграть ещё раз?(1 - Сыграть, 0 - Выход)"
     user_input = gets.chomp.to_i
     console_clear
-    abort if user_input.zero?
-    restart if user_input != 1
+    return if user_input.zero?
+    restart_interface if user_input != 1
 
     @player.cards_drop
     @diler.cards_drop
