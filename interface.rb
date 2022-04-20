@@ -79,8 +79,8 @@ class Interface
     user_input = gets.chomp.to_i
     console_clear
     return if user_input.zero?
-    restart_interface if user_input != 1
 
+    restart_interface if user_input != 1
     @player.cards_drop
     @diler.cards_drop
     game_start
